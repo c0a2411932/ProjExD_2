@@ -1,6 +1,8 @@
 import os
 import random
 import sys
+import time
+import math
 import pygame as pg
 
 
@@ -21,7 +23,56 @@ def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
     if rct.top < 0 or HEIGHT < rct.bottom:
         tate = False
     return yoko, tate
- 
+def gameover(screen: pg.Surface) -> None:
+    """
+    游戏结束画面显示函数
+    
+    参数:
+        screen: 主画面Surface
+    """
+    # 1. 创建用于绘制黑色矩形的空Surface
+    overlay = pg.Surface((WIDTH, HEIGHT))
+    overlay.fill((0, 0, 0))
+    
+    # 2. 设置Surface的透明度（半透明）
+    overlay.set_alpha(200)
+    
+    # 3. 创建Game Over文本
+    font = pg.font.Font(None, 100)
+    text = font.render("Game Over", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2 - 50))
+    
+    # 4. 加载哭泣的こうかとん图像
+    kk_img = pg.image.load("fig/8.png")
+    kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_rect = kk_img.get_rect(center=(WIDTH//2, HEIGHT//2 + 50))
+    
+    # 5. 绘制
+    screen.blit(overlay, (0, 0))
+    screen.blit(text, text_rect)
+    screen.blit(kk_img, kk_rect)
+    
+    # 6. 更新显示并等待
+    pg.display.update()
+    time.sleep(5)
+
+
+
+#def gameover(screen: pg.Surface) -> None:
+    over = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(over, (0, 0, 0), pg.Rect(0, 0, WIDTH, HEIGHT))
+    over.set_alpha(200)
+    font = pg.font.Font(None, 80)
+    text = font.render("Game Over", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2 - 50))
+    kk_img = pg.image.load("fig/8.png")
+    kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_rect = kk_img.get_rect(center=(WIDTH//2, HEIGHT//2 + 50))
+    screen.blit(over, (0, 0))
+    screen.blit(text, text_rect)
+    screen.blit(kk_img, kk_rect)
+    pg.display.update()
+    time.sleep(5)
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
