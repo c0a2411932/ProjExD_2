@@ -13,8 +13,18 @@ DELTA = {
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# def check_bound
+def check_bound(rct):
+    if rct.left < 0 or WIDTH < rct.right:
+        yoko = False
 
+def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
+    yoko,tate =True, True
+    if rct.left < 0 or WIDTH < rct.right:
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom:
+        tate = False
+    return yoko, tate
+ 
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -25,7 +35,7 @@ def main():
     kk_rct.center = 300, 200
     bb_img = pg.Surface((20,20))
     pg.draw.circle(bb_img,(255, 0, 0),(10, 10), 10)
-    # bb_img = set_colorkey(0, 0, 0)
+    bb_img = set_colorkey(0, 0, 0)
     bb_rct = bb_img.get_rect()
     bb_rct.centerx = random.randint(0, WIDTH)
     bb_rct.centerx = random.randint(0, HEIGHT)
@@ -36,7 +46,9 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-        screen.blit(bg_img, [0, 0]) 
+        screen.blit(bg_img, [0, 0])
+        if kk_rct.colliderect(bb_rct):
+            return 
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
@@ -53,7 +65,15 @@ def main():
         if key_lst[pg.K_RIGHT]:
             sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
+        bb_rct.move_ip(vx, vy)
+        yoko, tate check_bound(bb_rct)
+        if not yoko:
+            vx *= -1 
+        if not tate:
+            vy *= -1
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
